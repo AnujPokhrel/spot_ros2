@@ -1,14 +1,32 @@
+version: '3.8'
 services:
   spot-ros2-driver:
     image: spot_ros2:latest
+    # --- Networking & Memory Fixes ---
+    network_mode: "host"
+    ipc: host
+    shm_size: '2gb'
+    
     volumes:
+      # Mounts the config file you showed in your 'ls' output
       - ./spot_driver/config/spot_ros_example.yaml:/ros_ws/src/robot.yaml
+      # Passes the display socket for RViz
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/Anuj/SPOT/my_control_scripts:/ros_ws/my_control_scripts
+      - ./whitelist_profile.xml:/ros_ws/whitelist_profile.xml:ro
+      
     environment:
       - SPOT_NAME=${SPOT_NAME:-spot}
-      # Default value, can be set via CLI with >>SPOT_NAME=spot docker compose up<<
+      # Passes your laptop's display variable
+      - DISPLAY=${DISPLAY}
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - FASTRTPS_DEFAULT_PROFILES_FILE=/ros_ws/whitelist_profile.xml
+      # Points Docker to the FastDDS Server
+      # - ROS_DISCOVERY_SERVER=127.0.0.1:11811
+      
     command: >
       bash -c "
         source /opt/ros/humble/setup.bash && 
         source /ros_ws/install/setup.bash && 
-        ros2 launch spot_driver spot_driver.launch.py config_file:=/ros_ws/src/robot.yaml spot_name:=$${SPOT_NAME} launch_rviz:=False
-      "
+        ros2 launch spot_driver spot_driver.launch.py config_file:=/ros_ws/src/robot.yaml spot_name:=$${SPOT_NAME} launch_rviz:=True publish_point_clouds:=True"

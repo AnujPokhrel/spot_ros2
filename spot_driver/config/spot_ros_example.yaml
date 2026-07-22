@@ -4,8 +4,9 @@
   ros__parameters:
     # Spot Login Information
     username: "user"
-    password: "password"
-    hostname: "10.0.0.3"
+    password: "c5vhnje5ms8k"
+    # hostname: "192.168.80.3" #on the spot WiFI
+    hostname: "192.168.2.3"  # on the TPLINK_B916 WiFi
 
     # Status Updates from Spot
     metrics_rate: 0.04
