@@ -19,7 +19,7 @@ services:
       - SPOT_NAME=${SPOT_NAME:-spot}
       # Passes your laptop's display variable
       - DISPLAY=${DISPLAY}
-      - ROS_DOMAIN_ID=0
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
       - FASTRTPS_DEFAULT_PROFILES_FILE=/ros_ws/whitelist_profile.xml
       # Points Docker to the FastDDS Server
@@ -29,4 +29,4 @@ services:
       bash -c "
         source /opt/ros/humble/setup.bash && 
         source /ros_ws/install/setup.bash && 
-        ros2 launch spot_driver spot_driver.launch.py config_file:=/ros_ws/src/robot.yaml spot_name:=$${SPOT_NAME} launch_rviz:=True publish_point_clouds:=False uncompress_images:=False publish_compressed_images:=True"
+        ros2 launch spot_driver spot_driver.launch.py config_file:=/ros_ws/src/robot.yaml spot_name:=$${SPOT_NAME} launch_rviz:=True publish_point_clouds:=False uncompress_images:=False publish_compressed_images:=True depth_registered_mode:=disable"
